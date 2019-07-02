@@ -1,0 +1,117 @@
+
+div{
+    font-family: Georgia;
+}
+.top-text{
+    display: flex;
+    justify-content: center;
+    
+}
+.cotact-detail{
+    flex-grow: 1;
+}
+
+.icon{
+    position: relative;
+    top: 7px;
+}
+.icon-gif{
+    position: relative;
+    top: 10px;
+}
+
+
+
+.banner-top {
+    width: 100%;
+    background: url(./resources/banner.png) center;
+    height: 260px;
+    background-size: cover;
+}
+
+@media only screen and (max-width: 640px){
+
+    .banner-top{
+        height: 200px;
+    }
+}
+
+.content-container{
+    position: relative;
+    top: 30px;
+    height: 100px;
+    text-align: center;
+    display: flex;
+}
+
+.content{
+   
+    width: 33.3%;
+   
+}
+
+.content-text{
+    position: relative;
+    top:15px;
+    transition: 0ms;
+}
+
+.content-box{
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    border: 5px solid;
+    border-color: #f8db38 #8d86f3 #ff6c80 #85ceff;
+    cursor: pointer;
+    transition: 0.3s linear;
+    transition-delay: 0.2s;
+}
+
+.content-box:hover{
+    background: #ffffff;
+    color: transparent;
+    transform: rotate(-45deg);
+    width:50px;
+    height:50px;
+    font-size: smaller;
+}
+
+
+.box-me:hover{
+    border-color: #f8db38;
+}
+
+.box-work:hover{
+    border-color: #ff6c80;
+}
+
+.box-logs:hover{
+    border-color: #8d86f3;
+}
+
+.seperator{
+    background: #f8db38;
+    margin: 30px 5% 40px 5%;
+    opacity: 0.5;
+    height:8px;
+}
+
+.mainpart{
+    display: flex;
+    margin: 0px 5% 0px 5%;
+}
+.photo{
+    width: 100%;
+    background: url("/resources/me.jpg") center center;
+    height: 700px;
+    background-size: cover;
+}
+
+.introduction{
+    width: 50%;
+    position: relative;
+    left: 10%;
+    top: 5%;
+    color: #ffffff;
+    text-align: left;
+}
