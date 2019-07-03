@@ -14,26 +14,69 @@
     </div>
 
     <div class="content-container">
-        <div class = "content">
+        <div class = "content"  onclick="document.getElementById('aboutme-section').style.display='block';
+        document.getElementById('logs-section').style.display='none';
+        document.getElementById('mywork-section').style.display='none'"      
+        >
             <div class="content-box box-me">
-                <div class="content-text"> AboutMe</div>
+                <div class="content-text"> AboutMe
+
+                </div>
             </div>
         
         </div>
-        <div class = "content">
+        <div class = "content" onclick="document.getElementById('logs-section').style.display='block';
+        document.getElementById('aboutme-section').style.display='none';
+        document.getElementById('mywork-section').style.display='none'"  >
             <div class="content-box box-logs">
                 <div class="content-text"> Logs</div>
             </div>        
         </div>
-        <div class = "content">
+        <div class = "content" onclick="document.getElementById('mywork-section').style.display='block';
+        document.getElementById('logs-section').style.display='none';
+        document.getElementById('aboutme-section').style.display='none'"  >
             <div class="content-box box-work">
                     <div class="content-text"> MyWork</div>
             </div>     
        </div>
     </div>
 
-    <div class="aboutme-section">
-        <div class="seperator"></div>
+    <div class="section" id="logs-section">
+        <div class="seperator" id="logs"></div>
+        <div class="logpart">
+            <div class="single-log" id="one">
+                <div class="log-title" id="one">
+                    <a href="./对前端的认识.html"><h2>对前端的认识</h2></a>
+                </div>
+            </div> 
+            <div class="single-log" id="two">
+                <div class="log-title" id="two">
+                    <a href=""><h2>不存在的日志</h2></a>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    
+    <div class="section" id="mywork-section" style="display: none">
+        <div class="seperator" id="work"></div>
+        <div class="workpart">
+            <div class="single-work" id="one">
+                <div class="work-des" id="one">
+                    <div><br>镜花水月</div>
+                </div>
+            </div> 
+            <div class="single-work" id="two">
+                <div class="work-des" id="two">
+                    <div><br>Foot</div>
+                </div>
+            </div>           
+        </div>
+    </div>
+
+
+    <div class="section" id= "aboutme-section" style="display: none">
+        <div class="seperator" id="me"></div>
         <div class="mainpart">
             <div class = photo>
                  <div class="introduction">
@@ -41,16 +84,15 @@
                         <h2>My name is Ma YuQing.<br>
                            <ul>
                                <li> A college student.</li>
-                               <li>Major in SOFTWARE.</li>
-                               <li>🎤 ✔</li>
+                               <li>Major in software.</li>
+                               <li>🎤 √</li>
                                <li>💃 ×</li>
-                               <li>Rap ×</li>
+                               <li>😝 ×</li>
                                <li>🏀 √</li>
                            </ul>
                         </h2>
                         <h2><br>I wish to have a cat one day.</h2>
                         <h2>And I want to be an illustrator who can write codes.</h2>
-                        <h3>More hair, please.</h6> 
                 </div>
             </div>
            
