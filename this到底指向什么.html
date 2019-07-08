@@ -15,8 +15,73 @@
     </div>
        
     <div class="text">
-        <h2> &nbsp; &nbsp; &nbsp; &nbsp; 先认识了C++的this，再认识js的this就什么也不认识了，所以想捋一下this到底指向什么呢？
-        </h2>                
+        <p> &nbsp; &nbsp; &nbsp; &nbsp; 先认识了C++的this，再认识js的this就什么也不认识了，所以想在这里捋一下this指向什么。</p>     
+        <p> &nbsp; &nbsp; &nbsp; &nbsp; 总括地说，this指向它所属的对象。但要注意它的使用位置。</p>   
+        <ul>
+            <li>单独的情况下，this 指的是全局对象。</li>
+            <li>在函数中，this 指的是函数被调用时的所属。</li>
+            <li>在函数中（严格模式下），this 是 undefined</li>
+            <li>在事件中，this 指的是接收事件的元素。</li>
+        </ul>
+        <div class = 'seperator'></div>  
+        <h4>单独情况</h4>
+        <p>如果在js文件中，直接看this：</p>
+        <code>
+            console.log(this);
+        </code>
+        <p>我们得到的结果是：</p>
+        <code>
+                [object window];
+        </code>
+        <p>因为此时this就属于window。</p>
+        <div class = 'seperator'></div>  
+        <h4>在函数中</h4>
+        <p>this属于某个函数，要看函数是在哪里被调用的</p>
+        <p>情况一：</p>
+        <code>
+            function f(){<br>
+                &nbsp; &nbsp;      return this;<br>
+            } <br>
+            console.log(f());
+        </code>
+        <p>我们得到的结果是：</p>
+        <code>
+                [object window];
+        </code>
+        <p>因为此时this所在的函数就是在全局被调用的。</p>
+        <p>情况二：</p>
+        <code>
+                function f(){ <br>
+                    &nbsp; &nbsp;  return this; <br>
+                 } <br>
+                let obj = {  <br>
+                    &nbsp; &nbsp;      name: 'Peter', <br>
+                    &nbsp; &nbsp;      func: f <br>
+                 } <br>
+                 console.log(obj.func());
+            </code>
+            <p>我们得到的结果是：</p>
+            <code>
+                    [object Object];
+            </code>
+            <p>因为此时this所属的函数f()是作为一个对象方法被调用的，所以这里this就指向对象。</p>
+            <div class = 'seperator'></div>  
+            <h4>在函数中(strict 模式)</h4>
+            <p>如果是直接全局下调用函数：</p>
+            <p>情况一：</p>
+        <code>
+            'use strict'; <br>
+            function f(){<br>
+                &nbsp; &nbsp;      return this;<br>
+            } <br>
+            console.log(f());
+        </code>
+        <p>我们得到的结果是：</p>
+        <code>
+                undefined;
+        </code>
+        <p>如果是类似上面的情况二，结果不变，依然指向对象。</p>
+        
     </div>
        
 </body>

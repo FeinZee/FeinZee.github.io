@@ -16,3 +16,16 @@
 .text{
     margin:0 5% 5% 5%;
 }
+
+
+.seperator{
+    background: #f5e06c;
+    margin: 10px 2% 10px 2%;
+    opacity: 0.5;
+    height:2px;
+}
+
+code{
+    position: relative;
+    left: 30px;
+}
