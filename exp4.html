@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style-logs.css">
+    <title>FeinZee Logs</title>
+</head>
+<body>
+    <div class="banner-top">  </div>
+    <div class="title">
+            <h1>基础实验4的实现与检测 </h1>
+            <p> 2019-07-12</p>
+    </div>
+       
+    <div class="text">
+        <p> &nbsp; &nbsp; &nbsp; &nbsp; 毫无基础的我，竟然也写完了这个作业，我想借这个日志无脑地记录一下我遇到的问题和怎么实现。</p>     
+        <p> &nbsp; &nbsp; &nbsp; &nbsp; （但我还不是很理解orz）。</p>   
+        
+        <div class = 'seperator'></div>  
+        <h4>实现静态资源服务（Koa）</h4>
+        <ol>
+            <li>
+                <p>安装koa</p> 
+                <code>npm i koa</code>
+            </li>
+            <li>
+                <p>app.js</p>
+                <code>
+                        const Koa = require('koa');<br>
+                        const app = new Koa();<br>
+                        const path = require('path');<br>
+                        
+                        const serve = require('koa-static');<br><br>
+                        
+                        const home = serve(path.join(__dirname)+'/src/');<br><br>
+                        
+                        app.use(home);<br>
+                        
+                        app.listen(8000);
+                </code>
+                <p>其中我的主页html、js、css都在当前目录的叫src的文件夹里。然后：</p>
+                <code>
+                    npm install <br>
+                    npm start 
+                </code>
+                <p>然后在浏览器里输入：IP:8000 就可以看到主页了。按Ctrl+C可以关闭服务器。</p>
+            </li>
+            <li>
+                <p>如果缺少模块</p>
+                <code>
+                        npm install -g 'xxx' //xxx就是缺少的模块(有可能要用sudo)
+                </code>
+                <p>如果还不行，就输入:</p>
+                <code>
+                        export NODE_PATH=/usr/local/lib/node_modules/
+                </code>
+            </li>
+
+        </ol>
+        <div class = 'seperator'></div>  
+        <h4>实现静态资源服务（express）</h4>
+        <p>参考链接：
+            <a href=""> https://www.runoob.com/nodejs/nodejs-express-framework.html</a>
+        </p>
+        <ol>
+            <li>
+                <p>安装express</p> 
+                <code>npm install express --save</code>
+                <p>之后还用了multer中间件，用来处理multipart/form-data</p>
+                <code>npm install multer --save</code>    
+            </li>
+            <li>
+                <p>app.js</p>
+                <code>
+                        var express = require('express')<br>
+                        var app = express()<br>
+                        app.use('/src', express.static('src'))<br>
+
+                        var server = app.listen(8000, function () { })
+                                                
+                </code>
+                <p>然后在浏览器里输入：IP:8000/src/资源文件 就可以看到那些资源了。
+            </li>
+    
+
+        </ol>
+        <div class = 'seperator'></div>  
+        <h4>检测hw-token</h4>
+        <p> 用req.headers['hw-token']访问hw-token值，判断与自己的是否相等。
+        </p>
+        
+        <div class = 'seperator'></div>  
+        <h4>实现api/compute（express）</h4>
+        <p>multer用法参考链接：
+            <a href=""> https://www.npmjs.com/package/multer</a>
+        </p>
+        <p>因为post请求的Content-Type='multipart/form-data',所以用multer，用法如下：</p>
+        <code>
+                var multer = require('multer')<br>
+                var upload = multer()<br>
+                app.post('/api/compute', upload.none(), function (req, res) {...}）
+        </code>
+        <p>因为只需要文本域，传的是none()。这时候表单内容都在req.body里。如果要传文件等，可以参考上面链接。</p>
+        <p>在function读取/处理数据。</p>
+        <p>返回结果类型为 application/json, 我的方式如下：</p>
+        <code>res.set('Content-Type', 'application/json; charset=utf-8')<br>
+                res.send(response)
+        </code>
+        <p>response是我应该返回的内容。</p>
+        <div class = 'seperator'></div>  
+        <h4>实现api/pair（express）</h4>
+        <p>get和delete只要用app.get('/api/pair',function (req, res) {...})<br>
+            app.delete('/api/pair',function (req, res) {...})即可，数据在req.query里。
+        </p>
+        <div class = 'seperator'></div>  
+        <h4>测试(postman)</h4>
+        <img src="./resources/pair_post.jpg">  
+        <p>首先，比如我们要测/api/pair的post请求：</p>
+        <ul>
+            <li>
+                在1处选择post。
+            </li>
+            <li>
+                在2处填写url，后面写上接口。
+            </li>
+            <li>在3处headers添加需要的信息，比如hw-token。Content-Type会根据body的选择自己修改。</li>
+        </ul>
+        <img src="./resources/pair_post2.jpg" >
+        <ul>
+            <li>
+                在Body的1处选择对应的类型，然后在下面的表格里自己添加内容。
+                点击Send，发出请求。
+                在3处会显示状态，成功就是200。
+            </li>
+        </ul>
+        <p>我们可以再看看get。</p>
+        <img src="./resources/pair_get.png" >
+        <p>在最下面可以看到response的内容。</p>
+        <div class = 'seperator'></div>  
+        <h4>over</h4>
+        <p>写日志好累hhhh</p>
+    </div>
+       
+</body>
+</html>
