@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style-logs.css">
+    <title>FeinZee Logs</title>
+</head>
+<body>
+    <div class="banner-top">  </div>
+    <div class="title">
+            <h1>如何制作微信小游戏排行榜 </h1>
+            <p> 2019-07-26</p>
+    </div>
+       
+    <div class="text">
+        <p> &nbsp; &nbsp; &nbsp; &nbsp;我们的小游戏是用cocos做的，微信排行榜也可以继续用cocos做，简单概括其做法是：
+            在cocos新建一个工程（放在游戏工程同级目录），新工程处理开放数据域（也就是处理用户和好友信息）。它的好处是
+            可以继续利用cocos的框架，建立各种节点、制作预制件等来制作排行榜。缺点就是它作为一个新的工程，发布后会给游戏包
+            带来大概1M多的负担，微信小游戏的代码包有4M限制，所以有时候负担不起。具体操作可以参考cocos的文档： <a href="">http://docs.cocos.com/creator/manual/zh/publish/publish-wechatgame-sub-domain.html?h=%E5%BC%80%E6%94%BE</a>
+        </p>  
+        <p> &nbsp; &nbsp; &nbsp; &nbsp;我们是直接用微信开发工具写的，只占据几K的大小，缺点就是排行榜要自己画。
+            </p>  
+        
+        <div class = 'seperator'></div>  
+        <h4>在哪里写？</h4>
+        <p>可以直接参考微信的官方文档：
+            <a href="">https://developers.weixin.qq.com/minigame/dev/tutorial/open-ability/open-data.html</a>
+        </p>
+        <ol>
+            <li>
+                <p>发布游戏工程</p> 
+                <p>在cocos上构建项目，然后在微信开发者工具里打开build/wechatgame</p>
+            </li>
+            <li>
+                <p>修改game.json</p>
+                <p>在game.json里加上下面这一句：</p>
+                <code>
+                        "openDataContext": "src/myOpenDataContext"
+                </code>
+                <p>记得，game.json里各项要用逗号分隔。这句话的意思是指定开放数据域的代码目录。添加该配置项表示小游戏启用了开放数据域。
+                    openDataContext后面的文件夹可以自己命名。
+                </p>
+            </li>
+            <li>
+                <p>建开放数据域的代码目录和index.js</p>
+                <p>一般来说，src文件夹都已经存在，直接在src文件夹新建myOpenDataContext文件夹（名字自取），
+                    再在myOpenDataContext文件夹里新建index.js，然后就可以在index.js里绘制排行榜了。
+                </p>
+            </li>
+        </ol>
+        <div class = 'seperator'></div>  
+        <h4>主域中需要作什么？</h4>
+        <p> 主域就是指你的游戏工程。主域中一般要做的就是给开放数据域发送信号和做一个排行榜用来作为画布的地方。</p>
+        <ol>
+            <li>
+                <p>发送信号</p> 
+                <p>&nbsp; &nbsp; &nbsp; &nbsp; 在我们的游戏中，一旦玩家死亡，就会到结束界面。我们设定：只要到结束界面，就会给
+                    开放数据与发送一条信号，叫做：updateMaxScore，意思就是告诉开放数据域，该用户
+                    可能要刷新他的最高纪录了。具体代码如下，在结束界面的start()里：<br>
+                    <code>
+                            let openDataContext = wx.getOpenDataContext(); <br>
+                            openDataContext.postMessage({<br>
+                            message: 'updateMaxScore',<br>
+                            })
+                    </code>
+                    &nbsp; postMessage就是发送信息，这样在开放数据域（index.js)里，就可以这样去接收信号：<br>
+                    <code>
+                            wx.onMessage(data => {  <br>
+                                &nbsp;     switch (data.message) { <br>
+                                    &nbsp;&nbsp;     case 'show':  <br>
+                                    &nbsp; &nbsp;  &nbsp;&nbsp;      ... <br>
+                                    &nbsp; &nbsp;  &nbsp;     break <br>
+                                    &nbsp; &nbsp;    case 'updateMaxScore': <br>
+                                    &nbsp; &nbsp;&nbsp;&nbsp;       ... <br>
+                                    &nbsp; &nbsp;  &nbsp;    break <br>
+                                    &nbsp;    } <br>
+                              }) 
+                    </code>
+                </p>  
+            </li>
+            <li>
+                <p>确定排行榜在哪里画</p>
+                <p> 我们用一个sprite结点，叫做display来作为排行榜的画布，具体代码（写在主域里）：</p>
+                <code>
+                        let sharedCanvas = wx.getOpenDataContext().canvas  <br>
+                        this.tex.initWithElement(sharedCanvas) <br>
+                        this.tex.handleLoadedTexture() <br>
+                        this.display.spriteFrame = new cc.SpriteFrame(this.tex)
+                </code>
+                <p>&nbsp; &nbsp; &nbsp; &nbsp; sharedCanvas 是主域和开放数据域都可以访问的一个离屏画布。在开放数据域调用 wx.getSharedCanvas() 将返回 sharedCanvas。
+                        在主域中可以通过开放数据域实例访问 sharedCanvas，通过 drawImage() 方法可以将 sharedCanvas 绘制到上屏画布。具体可以参考上面给出的微信官方文档。
+                </p>
+                <p>&nbsp; &nbsp; &nbsp; &nbsp; 当然，别忘了制作一些按钮，比如打开排行榜按钮（发布信号show），关闭按钮（发布信号close）。这些要提前想到，因为你构建
+                    发布后才能在微信开发者工具里调。每次构建发布，game.json 和 src文件夹都会重新建立，那么
+                    你上面的文件夹和index.js都会消失。一般来说，微信开发者工具会保留之前的index.js，所以你发现你的src文件夹
+                    清空时，你可以重建openDataContext文件夹，重建index.js，它会自动把上个index.js内容复原。但是还是备份一下吧！
+                </p>
+            </li>
+    
+
+        </ol>
+        <div class = 'seperator'></div>  
+        <h4>画排行榜</h4>
+        <p> &nbsp; &nbsp; &nbsp; &nbsp;画排行榜用的是html canvas那一套，就看大家的耐心了。 <br>
+            <code>
+                    var sharedCanvas = wx.getSharedCanvas() <br>
+                    var context = sharedCanvas.getContext('2d')   <br>  
+            </code>
+            &nbsp; &nbsp; &nbsp; &nbsp;先取到这个画布，我们就在context上画。最常见的几个方法是： <br>
+            <code>
+                    //画笔的颜色，最后一个参数是透明度 <br>
+                    context.fillStyle = 'rgba(255,0,60,0.2)' <br>
+                    //画一个矩形,参数分别为定的点坐标x，坐标y，宽度，高度 <br>
+                    context.fillRect(x, y, width, height)<br>
+                    // 定字体和大小<br>
+                    context.font = '30px Comic Sans MS'<br>
+                    // 对齐方式<br>
+                    context.textAlign = 'center'<br>
+                    // 写上字<br>
+                    context.fillText('High Score Ranking List', x, y)<br>
+                    //清空某部分的画布 <br>
+                    context.clearRect(x, y, width, height) <br>  
+            </code>
+        </p>
+        
+        <div class = 'seperator'></div>  
+        <h4>上传和获取用户数据</h4>
+        <code>
+                wx.setUserCloudStorage({  <br>
+                    &nbsp;    KVDataList: [{ key: 'score', value: String(window.runtime) }], <br>
+                    &nbsp;      success: res => {  <br>
+                        &nbsp;          ... <br>
+                        &nbsp;     },  <br>
+                        &nbsp;     fail: res => {  <br>
+                            &nbsp;          ... <br>
+                    }); <br>
+        </code>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;KVDataList里是我们自己定义的内容，由key和value组成，也可以有所组key和value，注意value是字符串。
+            这个一定要记住，因为我们做排行榜时一般是用分数排序吧，到时候要记得把value转为数字进行比大小哦~
+        </p>
+        <p>
+                &nbsp; &nbsp; &nbsp; &nbsp;获得数据则是： <br>
+                <code>
+                        wx.getUserCloudStorage({  <br>
+                            keyList: ['score', 'maxScore'], <br>
+                            &nbsp;      success: res => {  <br>
+                                &nbsp;          ... <br>
+                                &nbsp;     },  <br>
+                                &nbsp;     fail: res => {  <br>
+                                    &nbsp;          ... <br>
+                            }); <br>
+                </code>
+        </p>
+        <p> &nbsp; &nbsp; &nbsp; &nbsp;看你想获得之前上传过的什么数据，把key写进keyList即可。</p>
+        <div class = 'seperator'></div>  
+        <h4>获得和绘制好友信息</h4>
+        <code>
+                wx.getFriendCloudStorage({ <br>
+                    &nbsp;    keyList: ['score', 'maxScore'], <br>
+                    &nbsp;success: res => { <br>
+                        &nbsp;let data = res.data <br>
+                        &nbsp;} <br>
+                  }); <br>
+        </code>
+        <p> &nbsp; &nbsp; &nbsp; &nbsp;现在用户的玩过这个游戏的好友信息都在data里了，注意，用户本身也是在这里面的。
+            data就是一个数组，data[i]就是一个用户的信息。data[i].avatarUrl就是用户的头像链接，
+            data[i].nickName是昵称,data[i]的['KVDataList']就是游戏数据啦~
+        </p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;那么画头像要怎么画呢？</p>
+        <code>
+                let avatar = wx.createImage() <br>
+                avatar.src = item.avatarUrl //item就是data[i] <br>
+                avatar.onload = function () { <br>
+                    &nbsp;ctx.drawImage(avatar,x,y,width,height) <br>
+                }
+        </code>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;这样之后，头像就在ctx里了，ctx就是类似上面的context。</p>
+        <div class = 'seperator'></div>  
+       
+        <h4>over</h4>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;写日志好累好累哦。</p>
+    </div>
+       
+</body>
+</html>
