@@ -219,7 +219,7 @@ a {
 }
 .photo{
     width: 100%;
-    background: url("/resources/me.jpg") center center;
+    background: url(./resources/me.jpg) center center;
     height: 700px;
     background-size: cover;
 }
